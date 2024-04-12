@@ -12,13 +12,13 @@ def get_student_info(data:dict, student_id:str)->dict:
 
 def add_course(data:dict, student_id:str, course_name:str, course_score:str)->str:
     """為指定學生添加一門課程及其分數"""
-    if course_name != "" and course_score!="":
+    if course_name != "" and course_score != "":
         for i in data:
             if i["student_id"]==student_id:
                 i["courses"].append({"name": course_name, "score": float(course_score)})
                 return "=>課程已成功新增。"
         raise ValueError( "=>發生錯誤: 學號 {} 找不到.".format(student_id))
-    raise ValueError( "=>其它例外: 課程名稱或分數不可空白.")
+    assert course_name != "" and course_score != "","=>其它例外: 課程名稱或分數不可空白."
 
 
 def calculate_average_score(student_data:dict)->float:
@@ -30,9 +30,11 @@ def calculate_average_score(student_data:dict)->float:
 
 
 if os.path.isfile("students.json"):
-    jsonFile = open("./students.json",'r',encoding="utf8")
-    json_data = json.load(jsonFile)
-    jsonFile.close()
+    #jsonFile = open("./students.json",'r',encoding="utf8")
+    #json_data = json.load(jsonFile)
+    #jsonFile.close()
+    with open("./students.json", 'r',encoding="utf8") as f:
+        json_data = json.load(f)
     while True :
         print("""***************選單***************
 1. 查詢指定學號成績
@@ -61,4 +63,6 @@ if os.path.isfile("students.json"):
             else:
                 raise ValueError("=>請輸入有效的選項。")
         except ValueError as error:
+            print(error)
+        except AssertionError as error:
             print(error)
